@@ -7,40 +7,20 @@ using System.Linq;
 
 namespace ImageFiltering
 {
-    class LocalBitmap
-    {
-        public Bitmap Bitmap { get; set; }
-        public String Name { get; set; }
-
-        public LocalBitmap(String name, Bitmap bitmap)
-        {
-            Name = name;
-            Bitmap = bitmap;
-        }
-    }
-
     class Program
     {
         static void Main(string[] args)
         {
-            List<LocalBitmap> sourceBitmaps = new List<LocalBitmap>();
+            var filter = new GaussianBlurFilter();
 
             string[] images = Directory.GetFiles(@"..\..\..\Source\");
             images.ToList().ForEach(i =>
             {
                 Image img = Image.FromFile(i);
-                sourceBitmaps.Add(new LocalBitmap(Path.GetFileName(i), new Bitmap(img)));
-            });
-
-
-            var filter = new GaussianBlurFilter();
-
-            sourceBitmaps.ForEach(b =>
-            {
-                ConvolutionProcessor processor = new ConvolutionProcessor(b.Bitmap);
+                Bitmap bpm = new Bitmap(img);
+                ConvolutionProcessor processor = new ConvolutionProcessor(bpm);
                 Bitmap result = processor.ComputeWith(filter);
-                result.Save($@"..\..\..\Processed\{b.Name}", b.Bitmap.RawFormat);
-
+                result.Save($@"..\..\..\Processed\{Path.GetFileName(i)}", bpm.RawFormat);
             });
 
             Console.WriteLine("Done");
