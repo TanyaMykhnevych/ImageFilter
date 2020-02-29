@@ -1,2 +1,2 @@
 # ImageFilter
-Image processing with different convolution matrixes
+Image processing with different convolution matrices
