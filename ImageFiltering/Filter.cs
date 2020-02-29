@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Text;
 
 namespace ImageFiltering
 {
     abstract public class Filter
     {
-
         abstract public double[,] Data { get; }
 
         public int Size => (int)Math.Sqrt(Data.Length);
@@ -45,236 +42,140 @@ namespace ImageFiltering
         {
             return Math.Min(Math.Max((int)(value / filter.NormalizationRate + filter.Bias), 0), 255);
         }
-
-        abstract public string ToStringAction();
-
     }
 
-
-    public class ReliefFilter : Filter
-    {
-
-        public override int NormalizationRate { get; } = 1;
-
-        public override int Bias { get; } = 0;
-
-        public override double[,] Data { get; } = {
-            {
-                -2, -1, 0
-            }, {
-                -1, 1, 1
-            }, {
-                0, 1, 2
-            }
-        };
-
-        public override string ToString()
-        {
-            return "Emboss (Relief)";
-        }
-
-        public override string ToStringAction()
-        {
-            return "embossed";
-        }
-
-    }
-
-    public class EdgeFilter : Filter
-    {
-
-        public override int NormalizationRate { get; } = 1;
-
-        public override int Bias { get; } = 0;
-
-        public override double[,] Data { get; } = {
-            {
-                0, 1, 0
-            }, {
-                1, -4, 1
-            }, {
-                0, 1, 0
-            }
-        };
-
-
-        public override string ToString()
-        {
-            return "Edge Detect";
-        }
-
-
-        public override string ToStringAction()
-        {
-            return "edged";
-        }
-
-    }
-
+    #region Blur
     public class BoxBlurFilter : Filter
     {
-
         public override int NormalizationRate { get; } = 16;
 
         public override int Bias { get; } = 0;
 
         public override double[,] Data { get; } = {
-            {
-                1, 2, 1
-            }, {
-                2, 4, 2
-            }, {
-                1, 2, 1
-            }
+            { 1, 2, 1 },
+            { 2, 4, 2 },
+            { 1, 2, 1 }
         };
 
         public override string ToString()
         {
-            return "Box Blur";
+            return "BoxBlur";
         }
-
-        public override string ToStringAction()
-        {
-            return "box-blured";
-        }
-
     }
 
-    public class SharpenFilter : Filter
+    public class Gaussian3x3BlurFilter : Filter
     {
-
-        public override int NormalizationRate { get; } = 1;
+        public override int NormalizationRate { get; } = 16;
 
         public override int Bias { get; } = 0;
 
         public override double[,] Data { get; } = {
-            {
-                0, 0, 0, 0, 0
-            }, {
-                0, 0, 5, 0, 0
-            }, {
-                0, -1, 5, -1, 0
-            }, {
-                0, 0, 1, 0, 0
-            }, {
-                0, 0, 0, 0, 0
-            }
+            { 1, 2, 1, },
+            { 2, 4, 2, },
+            { 1, 2, 1, },
         };
 
         public override string ToString()
         {
-            return "Sharpen";
+            return "Gaussian3x3Blur";
         }
-
-        public override string ToStringAction()
-        {
-            return "sharpened";
-        }
-
     }
 
-
-    public class IdentityFilter : Filter
+    public class Gaussian5x5BlurFilter : Filter
     {
-
-        public override int NormalizationRate { get; } = 1;
-
-        public override int Bias { get; } = 0;
-
-        public override double[,] Data { get; } = {
-            {
-                0, 0, 0
-            }, {
-                0, 1, 0
-            }, {
-                0, 0, 0
-            }
-        };
-
-        public override string ToString()
-        {
-            return "Identity";
-        }
-
-        public override string ToStringAction()
-        {
-            return "identity";
-        }
-
-    }
-
-
-    public class GaussianBlurFilter : Filter
-    {
-
         public override int NormalizationRate { get; } = 256;
 
         public override int Bias { get; } = 0;
 
         public override double[,] Data { get; } = {
-            {
-                1, 4, 6, 4, 1
-            }, {
-                4, 16, 24, 16, 4
-            }, {
-                6, 24, 36, 24, 6
-            }, {
-                4, 16, 24, 16, 4
-            }, {
-                1, 4, 6, 4, 1
-            }
+            { 1, 4, 6, 4, 1 },
+            { 4, 16, 24, 16, 4 },
+            { 6, 24, 36, 24, 6 },
+            { 4, 16, 24, 16, 4 },
+            { 1, 4, 6, 4, 1 }
         };
 
         public override string ToString()
         {
-            return "Gaussian Blur";
+            return "Gaussian5x5Blur";
         }
-
-        public override string ToStringAction()
-        {
-            return "gaussian-blured";
-        }
-
     }
 
-    public class MotionBlurFilter : Filter
+    public class Mean5x5BlurFilter : Filter
     {
+        public override int NormalizationRate { get; } = 25;
 
-        public override int NormalizationRate { get; } = 9;
+        public override int Bias { get; } = 0;
+
+        public override double[,] Data { get; } =  { {  1, 1, 1, 1, 1 },
+                                                     {  1, 1, 1, 1, 1 },
+                                                     {  1, 1, 1, 1, 1 },
+                                                     {  1, 1, 1, 1, 1 },
+                                                     {  1, 1, 1, 1, 1 }, };
+
+        public override string ToString()
+        {
+            return "Mean5x5Blur";
+        }
+    }
+    #endregion Blur
+
+    #region Sharpen
+    public class Sharpen3x3Filter : Filter
+    {
+        public override int NormalizationRate { get; } = 3;
 
         public override int Bias { get; } = 0;
 
         public override double[,] Data { get; } = {
-            {
-                1, 0, 0, 0, 0, 0, 0, 0, 0
-            }, {
-                0, 1, 0, 0, 0, 0, 0, 0, 0
-            }, {
-                0, 0, 1, 0, 0, 0, 0, 0, 0
-            }, {
-                0, 0, 0, 1, 0, 0, 0, 0, 0
-            }, {
-                0, 0, 0, 0, 1, 0, 0, 0, 0
-            }, {
-                0, 0, 0, 0, 0, 1, 0, 0, 0
-            }, {
-                0, 0, 0, 0, 0, 0, 1, 0, 0
-            }, {
-                0, 0, 0, 0, 0, 0, 0, 1, 0
-            }, {
-                0, 0, 0, 0, 0, 0, 0, 0, 1
-            }
+           {  0, -2,  0, },
+           { -2, 11, -2, },
+           {  0, -2,  0, },
         };
 
         public override string ToString()
         {
-            return "Motion Blur";
+            return "Sharpen3x3";
         }
-
-        public override string ToStringAction()
-        {
-            return "motion-blured";
-        }
-
     }
+
+    public class SharpenIntenseFilter : Filter
+    {
+        public override int NormalizationRate { get; } = 1;
+
+        public override int Bias { get; } = 0;
+
+        public override double[,] Data { get; } = {
+            { 1,  1,  1, },
+            { 1, -7,  1, },
+            { 1,  1,  1, },
+        };
+
+        public override string ToString()
+        {
+            return "SharpenIntence";
+        }
+    }
+
+    public class Sharpen5x5Filter : Filter
+    {
+        public override int NormalizationRate { get; } = 8;
+
+        public override int Bias { get; } = 0;
+
+        public override double[,] Data { get; } = {
+           { -1, -1, -1, -1, -1, },
+           { -1,  2,  2,  2, -1, },
+           { -1,  2,  8,  2,  1, },
+           { -1,  2,  2,  2, -1, },
+           { -1, -1, -1, -1, -1, },
+        };
+
+        public override string ToString()
+        {
+            return "Sharpen5x5";
+        }
+    }
+    #endregion Sharpen
 }
+
