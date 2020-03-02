@@ -12,20 +12,19 @@ namespace ImageFiltering
     {
         static void Main(string[] args)
         {
-            string[] images = Directory.GetFiles(@"..\..\..\Source\", "*", SearchOption.AllDirectories);
+            string[] images = Directory.GetFiles(@"..\..\..\Source\", "17*", SearchOption.AllDirectories);
 
             Stopwatch s = new Stopwatch();
             s.Start();
 
             List<Thread> threads = new List<Thread>();
 
-            threads.Add(new Thread(() => ApplyGaussian3x3(images)));
-            threads.Add(new Thread(() => ApplyGaussian5x5(images)));
-            threads.Add(new Thread(() => ApplyBoxBlur(images)));
-            threads.Add(new Thread(() => ApplyMean5x5(images)));
-            threads.Add(new Thread(() => ApplySharpen3x3(images)));
+            //threads.Add(new Thread(() => ApplyGaussian3x3(images)));
+            //threads.Add(new Thread(() => ApplyGaussian5x5(images)));
+            //threads.Add(new Thread(() => ApplyMean5x5(images)));
+            //threads.Add(new Thread(() => ApplySharpen3x3(images)));
             threads.Add(new Thread(() => ApplySharpen5x5(images)));
-            threads.Add(new Thread(() => ApplySharpenIntence(images)));
+            //threads.Add(new Thread(() => ApplySharpenIntence(images)));
 
             threads.ForEach(s => s.Start());
             threads.ForEach(s => s.Join());
@@ -46,12 +45,6 @@ namespace ImageFiltering
         {
             Gaussian5x5BlurFilter gaussian5x5 = new Gaussian5x5BlurFilter();
             ApplyFilter(images, gaussian5x5);
-        }
-
-        static void ApplyBoxBlur(string[] images)
-        {
-            BoxBlurFilter boxBlur = new BoxBlurFilter();
-            ApplyFilter(images, boxBlur);
         }
 
         static void ApplyMean5x5(string[] images)

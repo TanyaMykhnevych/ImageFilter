@@ -45,23 +45,6 @@ namespace ImageFiltering
     }
 
     #region Blur
-    public class BoxBlurFilter : Filter
-    {
-        public override int NormalizationRate { get; } = 16;
-
-        public override int Bias { get; } = 0;
-
-        public override double[,] Data { get; } = {
-            { 1, 2, 1 },
-            { 2, 4, 2 },
-            { 1, 2, 1 }
-        };
-
-        public override string ToString()
-        {
-            return "BoxBlur";
-        }
-    }
 
     public class Gaussian3x3BlurFilter : Filter
     {
@@ -159,14 +142,14 @@ namespace ImageFiltering
 
     public class Sharpen5x5Filter : Filter
     {
-        public override int NormalizationRate { get; } = 8;
+        public override int NormalizationRate { get; } = 6;
 
         public override int Bias { get; } = 0;
 
         public override double[,] Data { get; } = {
            { -1, -1, -1, -1, -1, },
            { -1,  2,  2,  2, -1, },
-           { -1,  2,  8,  2,  1, },
+           { -1,  2,  7,  2, -1, },
            { -1,  2,  2,  2, -1, },
            { -1, -1, -1, -1, -1, },
         };
